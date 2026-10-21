@@ -1,0 +1,14 @@
+{
+  "name": "Discipline Engine",
+  "short_name": "Discipline",
+  "description": "A 3D routine enforcer: meals, study, work and manifestation locked to your schedule.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#05060f",
+  "theme_color": "#05060f",
+  "icons": [
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}
