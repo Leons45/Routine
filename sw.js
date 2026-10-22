@@ -1,4 +1,4 @@
-const CACHE = 'discipline-engine-v2';
+const CACHE = 'discipline-engine-v3';
 const ASSETS = ['./', 'index.html', 'manifest.webmanifest', 'icon.svg'];
 
 self.addEventListener('install', (e) => {
