@@ -6,7 +6,14 @@ on:
     # minutes late under load — scripts/send-push.js uses a matching window
     # so a late run still catches anything due.
     - cron: '*/10 * * * *'
-  workflow_dispatch: {} # lets you fire a test run by hand from the Actions tab
+  workflow_dispatch: {} # lets you fire a test run by hand from the Actions tab too, if you ever want to
+  push:
+    branches: [main]
+    paths:
+      - 'data/subscription.json'
+      - '.github/workflows/push-reminders.yml'
+    # Also runs on a push that touches the subscription file, so Claude
+    # committing it is itself a test run — no manual click needed.
 
 permissions:
   contents: write
