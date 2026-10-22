@@ -1,34 +1,35 @@
 # Discipline Engine (website)
 
-A psychology-driven routine enforcer with a live 3D dial (Three.js). It runs in any browser, phone first, with a desktop layout. No build step, no backend. Data stays in your browser.
+A premium, psychology-driven routine OS built around three real goals: gain weight on a deadline, get fluent in French, and stay in the gym. It runs in any browser, phone first, with a desktop layout. No build step, no backend. Data stays in your browser.
 
-## Your day (editable in Config → Schedule)
-Weekdays: 6:30 wake · 7:00 meal 1 · 7:30 identity ritual · **9-5 work** · 10:30 meal 2 · 12:30 meal 3 · 3:30 meal 4 · **5-8 PM study (3 x 60 min)** · 8:00 meal 5 (earned dinner) · 8:35 optional bonus round (toward 4h) · 9:15 plan tomorrow · 9:45 meal 6 · 10:10 night ritual · 10:45 lights out.
-Weekends keep the same 3 study sessions, 6 meals and rituals on a relaxed timetable.
+## The three pillars
+- **Weight** — log weight whenever you want. The app tracks your trend, projects an ETA against your target, and tells you plainly whether you're on pace or behind. No calorie logging — just the trend that matters.
+- **French** — three sessions a day: **Speaking** and **Listening** are mandatory, locked to the schedule (5–8 PM weekdays), full-screen enforced like a real commitment. **Writing** is flexible — a stopwatch you start whenever, counted toward the day's total.
+- **Gym** — flexible, no fixed slot, "best around 8 PM" is a nudge not a lock. Log it whenever you train; a 14-day streak and loss-aversion penalty keep you honest.
 
-**Gym** is separate from the timed schedule — it's flexible, not locked to a slot. A standing card on the Core tab lets you log a session any time the day; it just has to happen before the day ends.
+Meals stay on the schedule too (fuel for the weight goal), along with wake, work, an evening ritual, next-day planning, and lights out.
+
+## The home screen
+Three activity rings (French / Weight / Gym) with a consistency score in the middle, a "Day N of 60" countdown to your weight deadline, and the next due item front and center. Everything below is a card: French skill breakdown with mandatory/flexible markers, the gym streak chain, a weight log box.
 
 ## The psychology built in
-- **Commitment + implementation intentions:** you must type exactly what you'll study before each session starts. Tomorrow's plan is written the night before.
-- **Friction in the right place:** a 3-item pre-flight (phone away, water, material open) before the timer starts.
+- **Mandatory vs. flexible, by design:** Speaking and Listening get full commitment-device treatment (locked schedule, pre-flight checklist, can't skip without a reason). Writing and Gym are logged on your terms — different goals need different friction.
+- **Commitment + implementation intentions:** name your topic or audio source before a French session starts.
 - **The 5-minute rule:** "Not feeling it?" starts a 5-minute session. At minute 5 you choose to continue or stop.
-- **Downgrade, never quit:** skipping asks *why* (tired, distracted, overwhelmed...), gives a tailored reframe, and offers a 15-minute version instead of a zero.
-- **Goal-gradient:** a progress ring on the dial and a bar toward your daily goal, with coaching text that changes with your progress.
-- **Don't break the chain:** a 14-day study chain, a streak counter and a "never miss twice" warning.
-- **Identity voting:** each completed session is a "vote" for the person you're becoming.
-- **Variable rewards:** random "focus crit" XP bonuses, levels, perfect-day bonus.
-- **Loss aversion:** XP penalties for missed blocks, strikes for leaving the tab mid-session, and a gym-streak penalty if the day closes without a logged session.
-- **Parking lot:** jot distracting thoughts during focus instead of acting on them.
-
-## Gym
-No fixed time — log it whenever you train. A 14-day streak chain (same "don't break the chain" visual as study) and a Gym-streak stat sit on the Core tab; a 7-day bar strip is on the Stats tab. Miss a whole day and the streak resets with an XP penalty at the next day rollover, same loss-aversion logic as everything else.
+- **Downgrade, never quit:** skipping asks *why*, gives a tailored reframe, and offers a half-credit version instead of a zero.
+- **Don't break the chain:** 14-day streak chains for French (mandatory) and Gym.
+- **Loss aversion:** consistency-score penalties for missed blocks, and for closing out a day without gym or without both mandatory French sessions.
+- **Weight ETA, not vibes:** a real projection from your logged trend against your deadline — tells you if the pace you're actually keeping gets you there.
 
 ## Put it online (GitHub Pages)
 1. New GitHub repo, upload: `index.html`, `manifest.webmanifest`, `sw.js`, `icon.svg`, `README.md`.
 2. Settings → Pages → Deploy from branch → `main` / root.
-3. Open `https://<username>.github.io/<repo>/` on your phone and laptop.
-4. Optional: on iPhone Safari tap Share → Add to Home Screen so it opens full-screen.
+3. Open `https://<username>.github.io/<repo>/` on your phone and laptop — match the repo's exact case, GitHub Pages URLs are case-sensitive.
+4. On iPhone Safari tap Share → Add to Home Screen so it opens full-screen.
+
+## Config
+Set your weight target and deadline (defaults to +8kg in 60 days from whenever you first open the app), per-skill French minute targets, strict mode, and sound — all in the Config tab. Export/Import backs up everything as JSON.
 
 ## Honest limits
-A website can't lock your phone or run in the background. It enforces while the page is open (full-screen lockdown, alarms, XP penalties). Keep the tab open on your desk or phone, or set Shortcuts / Screen Time on iPhone to open it at block times.
-Data lives per browser. Use Config → Export / Import to sync phone and laptop.
+A website can't lock your phone or run in the background. It enforces while the page is open (full-screen lockdown, alarms, score penalties). Keep the tab open on your desk or phone, or use Shortcuts / Screen Time on iPhone to open it at block times.
+Data lives per browser. Use Config → Export / Import to sync phone and laptop. If you had the previous version installed, your weight history carries over automatically — session/streak data starts fresh under the new model.

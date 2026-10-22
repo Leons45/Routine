@@ -1,13 +1,13 @@
 {
   "name": "Discipline Engine",
   "short_name": "Discipline",
-  "description": "A 3D routine enforcer: meals, study, work and manifestation locked to your schedule.",
+  "description": "A premium routine OS: weight-gain tracking, mandatory French practice, and flexible gym logging, built around activity rings and real loss-aversion.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait",
-  "background_color": "#05060f",
-  "theme_color": "#05060f",
+  "background_color": "#0a0c10",
+  "theme_color": "#0a0c10",
   "icons": [
     { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
   ]
