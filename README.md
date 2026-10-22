@@ -29,6 +29,17 @@ A greeting and coach line, three rings (French today, weight toward goal, gym se
 ## Config
 Set your weight target and deadline (defaults to +8kg in 60 days from whenever you first open the app), per-skill French minute targets, strict mode, and sound — all in the Config tab. Export/Import backs up everything as JSON.
 
+## Real push notifications (even when the app is closed)
+A static site can't wake itself up on its own — that's an OS restriction, not a limitation of this app. So the push pipeline here uses a real, separate sender: a GitHub Action in this repo runs every 10 minutes, checks the time in America/Toronto against `data/schedule.json`, and sends a Web Push notification through Apple's push service for anything due. It works even if the app hasn't been opened all day, on iOS 16.4+, once installed via Add to Home Screen.
+
+One-time setup:
+1. Repo → Settings → Secrets and variables → Actions → add `VAPID_PUBLIC_KEY` and `VAPID_PRIVATE_KEY` (generated once, provided separately — don't commit the private key to the repo).
+2. On the phone: Add to Home Screen → open from the Home Screen icon → Settings tab → "Set up push notifications" → allow the permission prompt.
+3. Copy the subscription JSON it shows you and get it committed to `data/subscription.json` (Claude can do this, or commit it by hand).
+4. From the GitHub repo's Actions tab, run the "Push reminders" workflow once manually (`workflow_dispatch`) to confirm a test notification arrives, instead of waiting for the next 10-minute tick.
+
+`data/schedule.json` is a flat duplicate of `DEFAULT_SCHEDULE` in `index.html`, since the Action can't execute the app's JS — if you change meal times or days in the app, update that file too or the reminders will drift out of sync. `data/sent.json` tracks what's already been sent today so nothing double-fires; the Action commits it back after each run.
+
 ## Honest limits
-A website can't lock your phone or run in the background. It enforces while the page is open (full-screen lockdown, alarms, score penalties). Keep the tab open on your desk or phone, or use Shortcuts / Screen Time on iPhone to open it at block times.
+A website can't lock your phone or run in the background — it enforces while the page is open (full-screen lockdown, alarms, score penalties) and sends real push notifications through the Action above. For things no notification can force (actually putting the phone down and starting), use Shortcuts / Screen Time on iPhone to force-open the app at block times.
 Data lives per browser. Use Config → Export / Import to sync phone and laptop. If you had the previous version installed, your weight history carries over automatically — session/streak data starts fresh under the new model.

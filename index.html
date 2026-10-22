@@ -323,7 +323,17 @@ canvas#wc{width:100%;height:170px;display:block}
       <div class="card" style="padding:4px 16px">
         <label class="tog"><span>Strict mode<small>Full-screen lockdown for speaking and listening when due. Limited snoozes, escalating alarms.</small></span><input type="checkbox" id="cStrict"></label>
         <label class="tog"><span>Sound<small>Chimes and alerts.</small></span><input type="checkbox" id="cSound"></label>
-        <div class="tog"><span>Notifications<small>Works while the app is open.</small></span><button class="btn" id="cNotif">Enable</button></div>
+        <div class="tog"><span>In-app notifications<small>Works only while the app is open.</small></span><button class="btn" id="cNotif">Enable</button></div>
+      </div>
+      <h3>Push notifications</h3>
+      <div class="card" style="padding:4px 16px 16px">
+        <p class="md" style="margin:10px 2px 4px">Real notifications that arrive even if the app has been closed all day — sent by a GitHub Action on your schedule. One-time setup: generate a subscription below, then send it to Claude once to finish wiring it up.</p>
+        <div class="rowf" style="margin-top:10px"><button class="btn" id="cPush" style="flex:1">Set up push notifications</button></div>
+        <div id="pushOut" style="display:none;margin-top:12px">
+          <p class="md" id="pushMsg" style="margin:0 0 8px"></p>
+          <textarea id="pushJson" readonly style="min-height:110px"></textarea>
+          <div class="rowf" style="margin-top:8px"><button class="btn" id="pushCopy">Copy subscription</button></div>
+        </div>
       </div>
       <h3>Weight goal</h3>
       <div class="card" style="padding:4px 16px">
@@ -1206,6 +1216,27 @@ $('#cSpeak').onchange=e=>{S.cfg.frTarget.speak=+e.target.value||60;save();update
 $('#cListen').onchange=e=>{S.cfg.frTarget.listen=+e.target.value||60;save();updateFrenchCard();drawRings()};
 $('#cWrite').onchange=e=>{S.cfg.frTarget.write=+e.target.value||60;save();updateFrenchCard();drawRings()};
 $('#cNotif').onclick=async()=>{unlockAudio();try{const p=await Notification.requestPermission();toast(p==='granted'?'Notifications enabled':'Notifications blocked',p==='granted'?'good':'bad')}catch(e){toast('Not supported in this browser','bad')}};
+
+/* ---------- push (real, server-sent) ---------- */
+const VAPID_PUBLIC_KEY='BP9r_b5AIakah_LH9I8mcutprDBsEDdEik14bXxCcxtvul9tT96zOG4V_J8rpji0ETz67SUpfuHff0Rj644SfKM';
+function urlB64ToUint8(b64){const pad='='.repeat((4-b64.length%4)%4),s=(b64+pad).replace(/-/g,'+').replace(/_/g,'/'),raw=atob(s),out=new Uint8Array(raw.length);for(let i=0;i<raw.length;i++)out[i]=raw.charCodeAt(i);return out}
+$('#cPush').onclick=async()=>{
+ unlockAudio();const btn=$('#cPush');btn.disabled=true;
+ try{
+  if(!('serviceWorker'in navigator)||!('PushManager'in window))throw new Error('Push isn\'t supported in this browser. On iPhone this needs Add to Home Screen first, then open it from the Home Screen icon (not Safari).');
+  const perm=await Notification.requestPermission();
+  if(perm!=='granted')throw new Error('Notification permission was not granted.');
+  const reg=await navigator.serviceWorker.ready;
+  let sub=await reg.pushManager.getSubscription();
+  if(!sub)sub=await reg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:urlB64ToUint8(VAPID_PUBLIC_KEY)});
+  const json=JSON.stringify(sub.toJSON(),null,1);
+  $('#pushMsg').textContent='Subscribed. Copy this and send it to Claude once — it gets committed to the repo and the GitHub Action takes it from there.';
+  $('#pushJson').value=json;$('#pushOut').style.display='';
+  toast('Subscribed — now send the JSON to Claude','good');
+ }catch(e){toast(e.message,'bad')}
+ btn.disabled=false;
+};
+$('#pushCopy').onclick=async()=>{try{await navigator.clipboard.writeText($('#pushJson').value);toast('Copied','good')}catch(e){$('#pushJson').select();toast('Select All then Copy','bad')}};
 $('#cAffSave').onclick=()=>{S.cfg.aff=$('#cAff').value.split('\n').map(s=>s.trim()).filter(Boolean);save();toast('Statements saved','good')};
 $('#cSchedSave').onclick=()=>{try{const a=JSON.parse($('#cSched').value);
  if(!Array.isArray(a)||!a.every(i=>i.id&&/^\d\d?:\d\d$/.test(i.t)&&TYPES[i.type]&&i.title))throw new Error('Each item needs id, t ("HH:MM"), d, type, title, days');

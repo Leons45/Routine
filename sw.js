@@ -1,4 +1,4 @@
-const CACHE = 'discipline-engine-v7';
+const CACHE = 'discipline-engine-v8';
 const ASSETS = ['./', 'index.html', 'manifest.webmanifest', 'icon.svg'];
 
 self.addEventListener('install', (e) => {
@@ -25,6 +25,18 @@ self.addEventListener('fetch', (e) => {
       })
       .catch(() => caches.match(e.request))
   );
+});
+
+// True push: arrives from GitHub Actions even if the app hasn't been opened today.
+self.addEventListener('push', (e) => {
+  let data = {};
+  try { data = e.data ? e.data.json() : {}; } catch (err) {}
+  const title = data.title || 'Discipline Engine';
+  const body = data.body || 'Time to execute.';
+  e.waitUntil(self.registration.showNotification(title, {
+    body, icon: 'icon.svg', badge: 'icon.svg', vibrate: [150, 80, 150],
+    tag: 'de-push-' + (data.id || title), renotify: true,
+  }));
 });
 
 self.addEventListener('notificationclick', (e) => {

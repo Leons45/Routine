@@ -1,0 +1,26 @@
+{
+ "_comment": "Mirrors DEFAULT_SCHEDULE in index.html, for the push-reminder GitHub Action (scripts/send-push.js). It can't run the app's JS, so the schedule is duplicated here in a flat form. If you change times/meals/days in index.html, update this file to match or reminders will drift out of sync.",
+ "items": [
+  {"id":"wake","t":"07:30","title":"Wake up","body":"No snooze. Feet on the floor, water, two minutes of stretching.","days":[0,1,2,3,4,5,6]},
+  {"id":"m1","t":"07:45","title":"Breakfast: eggs","body":"4 whole eggs, toast or a paratha, a glass of whole milk.","days":[0,1,2,3,4,5,6]},
+  {"id":"work","t":"09:00","title":"Work","body":"9 to 5. The evening is already planned.","days":[1,2,3,4,5]},
+  {"id":"fsp-we","t":"09:30","title":"French speaking","body":"Today's speaking drill is waiting.","days":[0,6]},
+  {"id":"fls-we","t":"10:30","title":"French listening","body":"Today's listening task is waiting.","days":[0,6]},
+  {"id":"m2-wd","t":"12:30","title":"Lunch","body":"A full plate: rice or roti, protein, vegetables.","days":[1,2,3,4,5]},
+  {"id":"m2-we","t":"13:00","title":"Lunch","body":"A full plate: rice or roti, protein, vegetables.","days":[0,6]},
+  {"id":"m3","t":"16:00","title":"Chicken","body":"150–200 g, fuel before French.","days":[0,1,2,3,4,5,6]},
+  {"id":"fsp-wd","t":"17:00","title":"French speaking","body":"Today's speaking drill is waiting.","days":[1,2,3,4,5]},
+  {"id":"fls-wd","t":"18:00","title":"French listening","body":"Today's listening task is waiting.","days":[1,2,3,4,5]},
+  {"id":"snk","t":"19:15","title":"Pre-gym snack","body":"Banana and nuts, or peanut-butter toast.","days":[1,2,4,5]},
+  {"id":"gym","t":"20:00","title":"Gym","body":"8 to 9 PM. Log it in the app when you're done.","days":[1,2,4,5]},
+  {"id":"m5-rest","t":"19:15","title":"Dinner","body":"Your biggest plate of the day.","days":[0,3,6]},
+  {"id":"plan-rest","t":"20:30","title":"Plan tomorrow","body":"Five minutes. Decide tonight.","days":[0,3,6]},
+  {"id":"mind2-rest","t":"20:50","title":"Night ritual","body":"Breathe, speak it, see it.","days":[0,3,6]},
+  {"id":"m4-rest","t":"21:30","title":"Mass gainer","body":"Rest day, same shake.","days":[0,3,6]},
+  {"id":"m4-gym","t":"21:05","title":"Mass gainer","body":"Right after training, within 20 minutes.","days":[1,2,4,5]},
+  {"id":"m5-gym","t":"21:40","title":"Dinner","body":"Your biggest plate of the day.","days":[1,2,4,5]},
+  {"id":"plan-gym","t":"22:30","title":"Plan tomorrow","body":"Five minutes. Decide tonight.","days":[1,2,4,5]},
+  {"id":"mind2-gym","t":"22:50","title":"Night ritual","body":"Breathe, speak it, see it.","days":[1,2,4,5]},
+  {"id":"sleep","t":"23:45","title":"Lights out","body":"Phone on the charger. Asleep by midnight.","days":[0,1,2,3,4,5,6]}
+ ]
+}

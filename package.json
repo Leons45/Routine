@@ -1,0 +1,8 @@
+{
+  "name": "discipline-engine-push",
+  "private": true,
+  "description": "Only used by the GitHub Action that sends real push notifications (scripts/send-push.js). The app itself is a plain static site with no build step.",
+  "dependencies": {
+    "web-push": "^3.6.7"
+  }
+}
