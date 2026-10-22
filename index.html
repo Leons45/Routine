@@ -278,29 +278,34 @@ const ICON={
 const ic=(n,s=16)=>`<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${ICON[n]||''}</svg>`;
 
 /* ---------- schedule ---------- */
-const WD=[1,2,3,4,5],WE=[0,6],ALL=[0,1,2,3,4,5,6];
+const WD=[1,2,3,4,5],WE=[0,6],ALL=[0,1,2,3,4,5,6],GYM=[1,2,4,5],NONGYM=[0,3,6];
 const DEFAULT_SCHEDULE=[
- {id:'plan',t:'21:15',d:15,type:'plan',title:'Plan tomorrow',desc:'5 minutes. Decide tonight what you will do, so tomorrow-you never has to negotiate.',days:ALL},
- {id:'m6',t:'21:30',d:20,type:'meal',title:'Meal 6 — Night shake',desc:'Milk + banana + peanut butter + oats shake. Calories before bed.',days:ALL},
- {id:'mind2',t:'21:50',d:15,type:'mind',title:'Night ritual',desc:'Breathe, speak it, see it. You are rehearsing the person you are becoming.',days:ALL},
- {id:'sleep',t:'22:30',d:15,type:'sleep',title:'Lights out',desc:'Screens down. Sleep is where learning sticks and weight gets built.',days:ALL},
- {id:'wake',t:'06:30',d:15,type:'body',title:'Wake up — no snooze',desc:'Feet on the floor. Water. 5-minute stretch.',days:WD},
- {id:'m1',t:'07:00',d:30,type:'meal',title:'Meal 1 — Breakfast',desc:'Eggs, oats, banana, milk. Eat the whole plate.',days:WD},
+ // wake + breakfast — same every day
+ {id:'wake',t:'08:00',d:15,type:'body',title:'Wake up — no snooze',desc:'Feet on the floor. Water. Get moving.',days:ALL},
+ {id:'m1',t:'08:15',d:20,type:'meal',title:'Meal 1 — Eggs',desc:'The day\'s first protein hit.',days:ALL},
+ // work — weekdays only
  {id:'work',t:'09:00',d:480,type:'work',w:30,title:'Work — clock in',desc:'9 to 5. Do great work. The evening is already planned.',days:WD},
- {id:'m2',t:'10:30',d:20,type:'meal',title:'Meal 2 — Mid-morning',desc:'Nuts, fruit, peanut-butter sandwich or a protein shake.',days:WD},
- {id:'m3',t:'12:30',d:30,type:'meal',title:'Meal 3 — Lunch',desc:'Rice/roti + protein + veg. A proper meal, not a snack.',days:WD},
- {id:'m4',t:'15:30',d:20,type:'meal',title:'Meal 4 — Pre-session fuel',desc:'Yogurt, banana, granola or a sandwich. A fed brain learns better.',days:WD},
+ // lunch
+ {id:'m2',t:'12:30',d:30,type:'meal',title:'Meal 2 — Lunch',desc:'Your main midday meal — protein + carbs + veg.',days:WD},
+ {id:'m2',t:'13:00',d:30,type:'meal',title:'Meal 2 — Lunch',desc:'Your main meal — protein + carbs + veg.',days:WE},
+ // pre-French fuel — chicken
+ {id:'m3',t:'16:00',d:20,type:'meal',title:'Meal 3 — Chicken',desc:'Protein before two hours of French. Keeps you from running on empty.',days:WD},
+ {id:'m3',t:'09:15',d:20,type:'meal',title:'Meal 3 — Chicken',desc:'Protein before French.',days:WE},
+ // French — mandatory, locked. Weekdays after work, weekends in the morning.
  {id:'fsp',t:'17:00',d:60,type:'french',skill:'speak',w:30,title:'French — Speaking',desc:'Out loud, no notes at first. Record yourself if you can.',days:WD},
- {id:'fls',t:'18:00',d:60,type:'french',skill:'listen',w:30,title:'French — Listening',desc:'Native-speed audio. Radio, podcast, or TV — no subtitles on the first pass.',days:WD},
- {id:'m5',t:'19:00',d:30,type:'meal',title:'Meal 5 — Dinner',desc:'Your biggest meal. Protein + carbs, consistently, is how the kilos come.',days:WD},
- {id:'wake',t:'08:00',d:15,type:'body',title:'Wake up — no snooze',desc:'Feet on the floor. Water. Stretch.',days:WE},
- {id:'m1',t:'08:30',d:30,type:'meal',title:'Meal 1 — Breakfast',desc:'Big breakfast. Eat the whole plate.',days:WE},
+ {id:'fls',t:'18:00',d:60,type:'french',skill:'listen',w:30,title:'French — Listening',desc:'Native-speed audio. No subtitles on the first pass.',days:WD},
  {id:'fsp',t:'10:00',d:60,type:'french',skill:'speak',w:30,title:'French — Speaking',desc:'Out loud, no notes at first. Record yourself if you can.',days:WE},
- {id:'m2',t:'11:15',d:20,type:'meal',title:'Meal 2 — Snack',desc:'Fruit, nuts, shake.',days:WE},
- {id:'fls',t:'11:45',d:60,type:'french',skill:'listen',w:30,title:'French — Listening',desc:'Native-speed audio, no subtitles on the first pass.',days:WE},
- {id:'m3',t:'13:30',d:30,type:'meal',title:'Meal 3 — Lunch',desc:'Proper meal. Protein + carbs.',days:WE},
- {id:'m4',t:'16:30',d:20,type:'meal',title:'Meal 4 — Afternoon fuel',desc:'Sandwich, yogurt, banana.',days:WE},
- {id:'m5',t:'19:00',d:30,type:'meal',title:'Meal 5 — Dinner',desc:'Biggest meal of the day.',days:WE}
+ {id:'fls',t:'11:00',d:60,type:'french',skill:'listen',w:30,title:'French — Listening',desc:'Native-speed audio. No subtitles on the first pass.',days:WE},
+ // gym days (Mon/Tue/Thu/Fri): shake right after training, dinner right behind it
+ {id:'m4',t:'21:05',d:15,type:'meal',title:'Meal 4 — Mass gainer',desc:'Right after training — easiest calories when you are not that hungry yet.',days:GYM},
+ {id:'m5',t:'21:25',d:30,type:'meal',title:'Meal 5 — Dinner',desc:'Biggest meal of the day, straight after the shake.',days:GYM},
+ // rest days: no training, no shake — eat dinner earlier
+ {id:'m5',t:'19:15',d:30,type:'meal',title:'Meal 4 — Dinner',desc:'No training today — eat a bit earlier.',days:NONGYM},
+ // wind-down — later on gym nights, earlier on rest nights
+ {id:'plan',t:'22:15',d:15,type:'plan',title:'Plan tomorrow',desc:'5 minutes. Decide tonight what you will do, so tomorrow-you never has to negotiate.',days:GYM},
+ {id:'mind2',t:'22:35',d:15,type:'mind',title:'Night ritual',desc:'Breathe, speak it, see it. You are rehearsing the person you are becoming.',days:GYM},
+ {id:'plan',t:'20:00',d:15,type:'plan',title:'Plan tomorrow',desc:'5 minutes. Decide tonight what you will do, so tomorrow-you never has to negotiate.',days:NONGYM},
+ {id:'mind2',t:'20:20',d:15,type:'mind',title:'Night ritual',desc:'Breathe, speak it, see it. You are rehearsing the person you are becoming.',days:NONGYM}
 ];
 const TYPES={
  meal:{c:'#f0b35e',icn:'cup',xp:30,pen:35,label:'Meal'},

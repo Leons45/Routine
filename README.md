@@ -4,10 +4,10 @@ A premium, psychology-driven routine OS built around three real goals: gain weig
 
 ## The three pillars
 - **Weight** — log weight whenever you want. The app tracks your trend, projects an ETA against your target, and tells you plainly whether you're on pace or behind. No calorie logging — just the trend that matters.
-- **French** — three sessions a day: **Speaking** and **Listening** are mandatory, locked to the schedule (5–8 PM weekdays), full-screen enforced like a real commitment. **Writing** is flexible — a stopwatch you start whenever, counted toward the day's total.
-- **Gym** — flexible, no fixed slot, "best around 8 PM" is a nudge not a lock. Log it whenever you train; a 14-day streak and loss-aversion penalty keep you honest.
+- **French** — three sessions a day: **Speaking** and **Listening** are mandatory, locked to the schedule (5–7 PM weekdays, 10–12 on weekends), full-screen enforced like a real commitment. **Writing** is flexible — a stopwatch you start whenever, counted toward the day's total.
+- **Gym** — flexible, no fixed slot, around 8–9 PM on training days is a nudge not a lock. Log it whenever you train; a 14-day streak and loss-aversion penalty keep you honest.
 
-Meals stay on the schedule too (fuel for the weight goal), along with wake, work, an evening ritual, next-day planning, and lights out.
+Meals follow Rohit's real day: eggs at wake-up, lunch midday, chicken before French, then on gym days (Mon/Tue/Thu/Fri) a mass-gainer shake right after training followed by dinner, or on rest days just an earlier dinner. Wake-up, work, next-day planning and the night ritual round out the schedule — timed a little later on gym nights to match the later dinner.
 
 ## The home screen
 Three activity rings (French / Weight / Gym) with a consistency score in the middle, a "Day N of 60" countdown to your weight deadline, and the next due item front and center. Everything below is a card: French skill breakdown with mandatory/flexible markers, the gym streak chain, a weight log box.
