@@ -4,13 +4,12 @@ A premium, psychology-driven routine OS built around three real goals: gain weig
 
 ## The three pillars
 - **Weight** — log weight whenever you want. The app tracks your trend, projects an ETA against your target, and tells you plainly whether you're on pace or behind. No calorie logging — just the trend that matters.
-- **French** — three sessions a day: **Speaking** and **Listening** are mandatory, locked to the schedule (5–7 PM weekdays, 10–12 on weekends), full-screen enforced like a real commitment. **Writing** is flexible — a stopwatch you start whenever, counted toward the day's total.
-- **Gym** — flexible, no fixed slot, around 8–9 PM on training days is a nudge not a lock. Log it whenever you train; a 14-day streak and loss-aversion penalty keep you honest.
-
-Meals follow Rohit's real day: eggs at wake-up, lunch midday, chicken before French, then on gym days (Mon/Tue/Thu/Fri) a mass-gainer shake right after training followed by dinner, or on rest days just an earlier dinner. Wake-up, work, next-day planning and the night ritual round out the schedule — timed a little later on gym nights to match the later dinner.
+- **French** — a 10-week road to B2 speaking and listening in the TEF Canada format. One theme per week (housing, work, health, transport, environment, tech, education, shopping, travel, life in Canada), a different drill every day: Section A questions, Section B persuasion, past-tense stories, debates, timed mocks, weak-point precision work, and review. Listening rotates through short news, radio interviews, dictation, native podcasts, timed tests, Québécois content and films. Speaking and Listening are mandatory and locked (5–7 PM weekdays, 9:30–11:30 weekends). Writing is a flexible stopwatch.
+- **Gym** — flexible logging, Mon/Tue/Thu/Fri around 8–9 PM. A 14-day chain and loss-aversion penalty keep you honest.
+- **Fuel** — six real meals with portions: eggs at 7:45, lunch, chicken at 4 PM, a pre-gym snack, the mass-gainer shake straight after training, then dinner. Rest days eat dinner earlier but keep the shake. Lights out at 11:45 PM, up at 7:30.
 
 ## The home screen
-Three activity rings (French / Weight / Gym) with a consistency score in the middle, a "Day N of 60" countdown to your weight deadline, and the next due item front and center. Everything below is a card: French skill breakdown with mandatory/flexible markers, the gym streak chain, a weight log box.
+A greeting and coach line, three rings (French today, weight toward goal, gym sessions this week) around your consistency score, the next due item, today's French drills, the fuel list with portions, the gym chain and a weight log. A French tab shows the full 10-week plan.
 
 ## The psychology built in
 - **Mandatory vs. flexible, by design:** Speaking and Listening get full commitment-device treatment (locked schedule, pre-flight checklist, can't skip without a reason). Writing and Gym are logged on your terms — different goals need different friction.
