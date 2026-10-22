@@ -44,7 +44,7 @@ main{flex:1;position:relative;min-height:0}
 .lede b{color:var(--tx);font-weight:500}
 .rings-row{display:flex;align-items:center;gap:20px;margin:22px 0 4px}
 #rings{display:block;flex:none}
-.legend3{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:13px;min-width:0}
+.legend3{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:14px;min-width:0;flex:1}
 .legend3 li{display:flex;gap:11px;align-items:flex-start}
 .legend3 .dot{margin-top:7px}
 .legend3 b{display:block;font:500 21px/1.1 var(--serif);font-variation-settings:'opsz' 48;letter-spacing:-.01em}
@@ -112,9 +112,12 @@ h3{font:500 17px/1.2 var(--serif);margin:10px 2px 0;color:var(--tx)}
 .fr .ft{font-size:13px;color:var(--mut);padding-top:2px}
 .fr .fn b{display:block;font-size:14.5px;font-weight:500}
 .fr .fn small{display:block;font-size:13px;color:var(--mut);line-height:1.45;margin-top:3px}
-.fr .fs{width:24px;height:24px;border-radius:50%;border:1.5px solid var(--hair2);display:flex;align-items:center;justify-content:center;margin-top:1px}
-.fr.done .fs{background:var(--weight);border-color:var(--weight);color:#0f1220}
-.fr.done .fn b,.fr.done .ft{opacity:.55}
+.fr .fs{width:24px;height:24px;border-radius:50%;border:1.5px solid var(--hair2);display:flex;align-items:center;justify-content:center;margin-top:1px;transition:background .25s var(--ease),border-color .25s var(--ease),transform .2s var(--ease)}
+.fr.done .fs{background:var(--weight);border-color:var(--weight);color:#0f1220;transform:scale(1.04)}
+.fr.done .fn b{text-decoration:line-through;text-decoration-color:var(--hair2);text-decoration-thickness:1.5px}
+.fr.done .fn b,.fr.done .ft{opacity:.5}
+.fr.due{position:relative}
+.fr.due::before{content:'';position:absolute;left:-18px;top:14px;bottom:14px;width:2px;border-radius:2px;background:var(--weight)}
 .fr.due .fs{border-color:var(--weight);box-shadow:0 0 0 4px rgba(243,178,107,.15)}
 .fr.due .fn b{color:var(--weight)}
 .fr.missed .fs{border-color:var(--red);color:var(--red)}
@@ -127,9 +130,10 @@ h3{font:500 17px/1.2 var(--serif);margin:10px 2px 0;color:var(--tx)}
 
 /* stats */
 .stats{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
-.stat{background:var(--s1);border:1px solid var(--hair);border-radius:18px;padding:14px}
-.stat b{display:block;font:500 24px/1.1 var(--serif);font-variation-settings:'opsz' 72}
-.stat span{font-size:12.5px;color:var(--mut);display:block;margin-top:4px}
+.stat{background:var(--s1);border:1px solid var(--hair);border-radius:18px;padding:16px 14px;position:relative;overflow:hidden}
+.stat::after{content:'';position:absolute;right:-18px;bottom:-18px;width:60px;height:60px;border-radius:50%;background:radial-gradient(circle,var(--sc,transparent),transparent 70%);opacity:.5}
+.stat b{display:block;font:500 26px/1.1 var(--serif);font-variation-settings:'opsz' 72;position:relative}
+.stat span{font-size:12px;color:var(--mut);display:block;margin-top:5px;position:relative}
 
 /* nav */
 nav{position:absolute;left:50%;transform:translateX(-50%);bottom:calc(env(safe-area-inset-bottom) + 12px);display:flex;gap:2px;padding:6px;
@@ -214,8 +218,12 @@ canvas#wc{width:100%;height:170px;display:block}
 .note{font-size:14px;color:var(--mut);line-height:1.55;padding:14px 15px;border-radius:16px;background:color-mix(in srgb,var(--c,#7b93ff) 8%,transparent);border:1px solid color-mix(in srgb,var(--c,#7b93ff) 22%,transparent);margin:4px 0 14px}
 .note b{color:var(--tx);font-weight:500;display:block;font:500 17px/1.3 var(--serif);margin-bottom:6px}
 .note q{color:var(--tx);quotes:none;font:italic 400 15px/1.5 var(--serif)}
-.chk{display:flex;gap:12px;align-items:center;padding:13px 14px;border:1px solid var(--hair);border-radius:14px;margin-top:8px;font-size:14.5px;background:var(--s1);cursor:pointer}
-.chk input{width:20px;height:20px;accent-color:var(--c);flex:none}
+.chk{display:flex;gap:12px;align-items:center;padding:13px 14px;border:1px solid var(--hair);border-radius:14px;margin-top:8px;font-size:14.5px;background:var(--s1);cursor:pointer;transition:border-color .2s,background .2s}
+.chk input{position:absolute;opacity:0;width:20px;height:20px;flex:none}
+.chk .cv{width:20px;height:20px;border-radius:7px;border:1.5px solid var(--hair2);flex:none;display:flex;align-items:center;justify-content:center;color:transparent;transition:background .2s,border-color .2s,color .2s}
+.chk:has(input:checked){border-color:color-mix(in srgb,var(--c) 45%,transparent);background:color-mix(in srgb,var(--c) 9%,transparent)}
+.chk:has(input:checked) .cv{background:var(--c);border-color:var(--c);color:#0f1220}
+.chk:has(input:focus-visible) .cv{outline:2px solid var(--c);outline-offset:2px}
 .chips{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
 .chip{padding:10px 15px;border-radius:99px;border:1px solid var(--hair);background:var(--s1);color:var(--tx);font:500 14px var(--sans);cursor:pointer}
 .chip.on{border-color:var(--hair2);background:rgba(236,232,223,.14)}
@@ -443,47 +451,53 @@ const TYPES={
 };
 
 /* ---------- French: 10-week road to B2 (speaking + listening, TEF Canada format) ---------- */
+// Themes track the scenario categories most often reported by recent TEF Canada
+// candidates (housing calls, HR/flexible-work questions, immigration & francophone
+// settlement, health & wellness, sustainability, social-media/AI debates, education,
+// consumer complaints, urban life, travel). TEF never publishes an official topic
+// bank, so this is built from current prep-source and candidate-report patterns,
+// not a leaked exam — treat it as realistic rehearsal, not a guaranteed match.
 const THEMES=[
- {n:'Logement',en:'Housing',v:['le bail','le loyer','les charges','le propriétaire','déménager','un quartier'],
-  a:'Annonce : appartement 4½ à louer à Montréal, 1 350 $/mois. Téléphonez et posez au moins 10 questions (charges, transport, animaux, durée du bail, date de disponibilité).',
-  b:'Convainquez un ami de partager un appartement avec vous plutôt que de vivre seul.',
-  s:'Racontez votre premier déménagement au Canada.',d:'Vaut-il mieux être propriétaire ou locataire ?'},
- {n:'Travail',en:'Work',v:['un entretien','le salaire','les horaires','embaucher','une promotion','le télétravail'],
-  a:'Annonce : poste de graphiste à temps partiel dans une agence de Toronto. Appelez et renseignez-vous (horaires, salaire, logiciels, télétravail, avantages).',
-  b:'Convainquez un ami d\'accepter un emploi dans une autre ville.',
-  s:'Racontez votre premier jour dans votre emploi actuel.',d:'Le télétravail est-il meilleur que le travail au bureau ?'},
- {n:'Santé et sport',en:'Health and fitness',v:['un abonnement','s\'entraîner','la musculation','se blesser','être en forme','un régime'],
-  a:'Annonce : salle de sport, abonnement à 29 $/mois, cours collectifs. Posez vos questions (horaires, engagement, coach, frais d\'inscription).',
-  b:'Convainquez un ami de commencer la musculation avec vous.',
-  s:'Racontez une fois où vous avez été malade ou blessé.',d:'Le gouvernement doit-il taxer les boissons sucrées ?'},
- {n:'Transports et ville',en:'Transport and the city',v:['un embouteillage','un trajet','la circulation','se garer','une contravention','les transports en commun'],
-  a:'Annonce : voiture d\'occasion, 2019, 8 500 $. Appelez le vendeur (kilométrage, entretien, accidents, prix négociable, essai).',
-  b:'Convainquez un ami de laisser sa voiture et de prendre le métro.',
-  s:'Racontez un voyage où tout s\'est mal passé.',d:'Faut-il interdire les voitures au centre-ville ?'},
- {n:'Environnement',en:'Environment',v:['le réchauffement','recycler','le gaspillage','durable','les déchets','une empreinte carbone'],
-  a:'Annonce : atelier gratuit de compostage et de jardinage urbain. Renseignez-vous (lieu, matériel, inscription, enfants).',
-  b:'Convainquez un ami de réduire sa consommation de plastique.',
-  s:'Décrivez un lieu naturel que vous avez visité et ce que vous avez ressenti.',d:'Qui doit agir pour le climat : les individus ou les entreprises ?'},
- {n:'Technologie',en:'Technology',v:['un écran','un forfait','télécharger','les réseaux sociaux','la vie privée','une application'],
-  a:'Annonce : forfait cellulaire illimité, 45 $/mois, sans contrat. Appelez (données, appels internationaux, frais cachés, résiliation).',
-  b:'Convainquez un ami de passer moins de temps sur les réseaux sociaux.',
-  s:'Racontez comment la technologie a changé votre métier de designer.',d:'L\'intelligence artificielle va-t-elle remplacer les créatifs ?'},
- {n:'Éducation',en:'Education',v:['une formation','s\'inscrire','un diplôme','les frais de scolarité','un stage','réussir'],
-  a:'Annonce : cours du soir de français, niveau B2, 12 semaines. Posez vos questions (prix, horaires, taille des groupes, certificat).',
-  b:'Convainquez un ami de reprendre ses études.',
-  s:'Racontez l\'histoire d\'un professeur qui vous a marqué.',d:'Les études universitaires devraient-elles être gratuites ?'},
- {n:'Consommation',en:'Shopping',v:['un rabais','rembourser','une garantie','la livraison','d\'occasion','un reçu'],
-  a:'Annonce : canapé d\'occasion en très bon état, 300 $, livraison possible. Appelez (dimensions, état, animaux, livraison, paiement).',
-  b:'Convainquez un ami d\'acheter ses meubles d\'occasion plutôt que neufs.',
-  s:'Racontez un achat que vous avez regretté.',d:'Les achats en ligne vont-ils faire disparaître les magasins ?'},
- {n:'Loisirs et voyages',en:'Leisure and travel',v:['un séjour','réserver','l\'hébergement','une excursion','dépaysant','annuler'],
-  a:'Annonce : voyage organisé à Québec, 3 jours, 499 $ tout compris. Renseignez-vous (transport, hôtel, repas, annulation, activités).',
-  b:'Convainquez un ami de partir en voyage avec vous cet hiver.',
-  s:'Racontez vos meilleures vacances.',d:'Vaut-il mieux voyager seul ou en groupe ?'},
- {n:'Vie au Canada',en:'Life in Canada',v:['s\'installer','s\'intégrer','un nouvel arrivant','les démarches','la francophonie','le bénévolat'],
-  a:'Annonce : association d\'aide aux nouveaux arrivants, ateliers gratuits. Appelez (services, horaires, conditions, langues).',
-  b:'Convainquez un ami de venir s\'installer au Canada.',
-  s:'Racontez votre arrivée au Canada et vos premières impressions.',d:'Faut-il parler français pour bien s\'intégrer au Québec ?'}
+ {n:'Logement',en:'Housing',v:['le bail','sous-louer','le dépôt','le propriétaire','un colocataire','l\'état des lieux'],
+  a:'Annonce : studio meublé à sous-louer 3 mois pendant un congé. Téléphonez et posez au moins 10 questions (prix, dépôt, meubles, charges incluses, date d\'entrée).',
+  b:'Convainquez un ami de devenir votre colocataire plutôt que de vivre seul.',
+  s:'Racontez un problème que vous avez eu avec un logement ou un propriétaire.',d:'Les villes devraient-elles plafonner le prix des loyers ?'},
+ {n:'Travail et entretiens',en:'Work and hiring',v:['un entretien','le télétravail','les horaires flexibles','la période d\'essai','un congé sans solde','le mentorat'],
+  a:'Annonce : poste de graphiste, agence de Toronto, horaires flexibles. Appelez les ressources humaines et renseignez-vous (salaire, télétravail, avantages, logiciels, période d\'essai).',
+  b:'Convainquez votre gestionnaire de vous laisser travailler à distance quatre jours par semaine.',
+  s:'Racontez votre premier jour dans votre emploi actuel.',d:'Les entreprises devraient-elles passer à la semaine de quatre jours ?'},
+ {n:'Immigration et vie au Canada',en:'Immigration and life in Canada',v:['s\'intégrer','un nouvel arrivant','la francophonie','les démarches','la résidence permanente','le bénévolat'],
+  a:'Annonce : organisme d\'aide aux nouveaux arrivants, ateliers de francisation gratuits. Appelez et renseignez-vous (horaires, niveau requis, documents, inscription).',
+  b:'Convainquez un ami que le français vaut l\'effort pour sa demande de résidence permanente.',
+  s:'Racontez votre arrivée au Canada et votre première impression.',d:'Le Canada doit-il donner la priorité à l\'immigration francophone ?'},
+ {n:'Santé et bien-être',en:'Health and wellbeing',v:['s\'inscrire sur une liste','un médecin de famille','épuisé','prendre congé','un suivi','un forfait de soins'],
+  a:'Annonce : clinique qui accepte de nouveaux patients pour un médecin de famille. Appelez et posez vos questions (délai d\'attente, documents, urgences, rendez-vous virtuels).',
+  b:'Convainquez votre employeur d\'offrir des journées de congé pour la santé mentale.',
+  s:'Racontez une période où vous étiez épuisé et ce qui vous a aidé à vous rétablir.',d:'Les employeurs devraient-ils être tenus d\'offrir des congés pour la santé mentale ?'},
+ {n:'Environnement et transport',en:'Environment and transport',v:['durable','une empreinte carbone','les énergies renouvelables','le covoiturage','une piste cyclable','les plastiques à usage unique'],
+  a:'Annonce : atelier municipal gratuit sur le compostage et les panneaux solaires résidentiels. Appelez et renseignez-vous (coût, inscription, matériel fourni, enfants bienvenus).',
+  b:'Convainquez un voisin de faire du covoiturage avec vous plutôt que de prendre deux voitures.',
+  s:'Décrivez un geste que vous avez changé dans votre vie pour réduire votre impact environnemental.',d:'Les municipalités devraient-elles remplacer les voies pour voitures par des pistes cyclables ?'},
+ {n:'Technologie et réseaux sociaux',en:'Technology and social media',v:['les réseaux sociaux','la vie privée','un algorithme','le temps d\'écran','l\'intelligence artificielle','désinformation'],
+  a:'Annonce : forfait internet résidentiel avec contrôle parental inclus. Appelez le fournisseur et renseignez-vous (vitesse, prix, durée du contrat, service client).',
+  b:'Convainquez un ami de limiter le temps d\'écran de ses enfants le soir.',
+  s:'Racontez comment la technologie a changé votre façon de travailler comme designer.',d:'Les réseaux sociaux devraient-ils être interdits aux moins de 16 ans ?'},
+ {n:'Éducation et jeunesse',en:'Education and youth',v:['une bourse','les frais de scolarité','le bénévolat obligatoire','une année sabbatique','le décrochage','un tuteur'],
+  a:'Annonce : cours du soir de français, niveau B2, douze semaines, petits groupes. Appelez et renseignez-vous (prix, horaires, taille des groupes, certificat final).',
+  b:'Convainquez un parent que le sport est aussi important que les cours de soutien supplémentaires pour son enfant.',
+  s:'Racontez l\'histoire d\'un professeur qui vous a particulièrement marqué.',d:'Les établissements scolaires devraient-ils supprimer les devoirs au primaire ?'},
+ {n:'Consommation et services',en:'Consumer rights and services',v:['un remboursement','une garantie','un reçu','un article défectueux','la livraison','porter plainte'],
+  a:'Annonce : canapé d\'occasion en très bon état, livraison possible. Appelez le vendeur et posez vos questions (dimensions, état, animaux dans la maison, mode de paiement).',
+  b:'Convainquez un ami d\'acheter ses meubles d\'occasion plutôt que neufs pour économiser.',
+  s:'Racontez un achat que vous avez regretté et comment vous l\'avez réglé.',d:'Les commerces devraient-ils être obligés d\'afficher l\'origine de leurs produits ?'},
+ {n:'Vie urbaine et communautaire',en:'Urban and community life',v:['un jardin communautaire','le bruit du voisinage','une bibliothèque','un espace partagé','un règlement municipal','le civisme'],
+  a:'Annonce : parcelles disponibles dans un jardin communautaire du quartier. Appelez et renseignez-vous (prix, outils fournis, horaires d\'accès, liste d\'attente).',
+  b:'Convainquez vos voisins d\'organiser un dimanche sans voitures dans votre rue.',
+  s:'Racontez un conflit de voisinage que vous avez vécu ou observé.',d:'Les bibliothèques publiques devraient-elles rester ouvertes 24 heures sur 24 ?'},
+ {n:'Voyages et loisirs',en:'Travel and leisure',v:['réserver','l\'hébergement','une excursion','annuler','un acompte','dépaysant'],
+  a:'Annonce : séjour organisé à Québec, trois jours, tout compris. Appelez l\'agence et renseignez-vous (transport, hôtel, repas, politique d\'annulation, activités incluses).',
+  b:'Convainquez un ami de voyager avec un petit groupe plutôt que de partir seul cet hiver.',
+  s:'Racontez vos meilleures vacances, ou un voyage où tout s\'est mal passé.',d:'Vaut-il mieux voyager seul ou en groupe ?'}
 ];
 const PHASES=[[0,2,'Foundations','Accuracy first: question forms, past tenses, negation, gender agreement.'],[3,6,'Fluency','Longer answers, stronger arguments, less hesitation.'],[7,9,'Exam simulation','Full timed mocks, accent variety, error clean-up.']];
 // index = getDay() (0 Sun … 6 Sat)
@@ -849,10 +863,10 @@ function renderFuel(){
 function renderStats(){
  const wc=weightCalc();
  $('#stats').innerHTML=`
-  <div class="stat"><b style="color:var(--french)">${frStreak()} d</b><span>French streak</span></div>
-  <div class="stat"><b style="color:var(--gym)">${gymStreak()} d</b><span>Gym streak</span></div>
-  <div class="stat"><b style="color:var(--weight)">${wc.have&&wc.etaDate?new Date(wc.etaDate+'T00:00:00').toLocaleDateString(undefined,{month:'short',day:'numeric'}):'—'}</b><span>Weight goal ETA</span></div>
-  <div class="stat"><b>${Math.round(S.score)}</b><span>Consistency</span></div>`;
+  <div class="stat" style="--sc:var(--french)"><b style="color:var(--french)">${frStreak()} d</b><span>French streak</span></div>
+  <div class="stat" style="--sc:var(--gym)"><b style="color:var(--gym)">${gymStreak()} d</b><span>Gym streak</span></div>
+  <div class="stat" style="--sc:var(--weight)"><b style="color:var(--weight)">${wc.have&&wc.etaDate?new Date(wc.etaDate+'T00:00:00').toLocaleDateString(undefined,{month:'short',day:'numeric'}):'—'}</b><span>Weight goal ETA</span></div>
+  <div class="stat" style="--sc:#ece8df"><b>${Math.round(S.score)}</b><span>Consistency</span></div>`;
 }
 function tapItem(id){
  const it=ITEMS.find(i=>i.id===id);if(!it)return;const s=STAT[it.id];
@@ -939,7 +953,7 @@ function frenchPrompt(it,body,T){
  const inp=h('input','in');inp.placeholder=it.skill==='speak'?'Your angle or extra topic':'Exact source (episode, show, link)';inp.value=saved||dr.short;inp.maxLength=120;inp.style.marginTop='12px';
  body.appendChild(inp);
  const boxes=[['Phone on Do Not Disturb'],[it.skill==='speak'?'Recorder open, drill read':'Audio cued, notebook open']].map(([t])=>{
-  const l=h('label','chk');const c=document.createElement('input');c.type='checkbox';l.append(c,document.createTextNode(t));body.appendChild(l);return c});
+  const l=h('label','chk');const c=document.createElement('input');c.type='checkbox';const cv=h('span','cv');cv.innerHTML=ic('check',13);l.append(c,cv,document.createTextNode(t));body.appendChild(l);return c});
  const go=h('button','go',`Start ${it.d}-minute session`);go.style.background=T.c;
  const upd=()=>{go.disabled=!(inp.value.trim().length>=3&&boxes.every(b=>b.checked))};
  inp.addEventListener('input',upd);boxes.forEach(b=>b.addEventListener('change',upd));upd();
