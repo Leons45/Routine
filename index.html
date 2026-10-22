@@ -600,8 +600,8 @@ function updateGymCard(){
   let c=k<S.created?'pre':dayGym(k)?'hit':(i===0?'':'miss');if(i===0)c+=' today';cells.push(`<i class="${c}" style="background:${dayGym(k)?'var(--gym)':''}"></i>`)}
  const html=cells.join('');if(html!==gchainSig){gchainSig=html;$('#gchain').innerHTML=html}
  const b=$('#gymBtn');
- b.innerHTML=done?`${ic('check',15)} Logged — streak ${gymStreak()}`:'Log gym session';
- b.style.opacity=done?'.55':'1';
+ b.innerHTML=done?`${ic('check',15)} Logged — streak ${gymStreak()} · tap to undo`:'Log gym session';
+ b.style.opacity=done?'.7':'1';
 }
 function updateWeightCard(){
  const wc=weightCalc();
@@ -802,7 +802,10 @@ function updateSwUI(){
 /* ---------- gym (flexible) ---------- */
 function logGym(){
  const lg=L(curDate);
- if(lg.gym){toast('Already logged today.','good');return}
+ if(lg.gym){
+  if(confirm("Undo today's gym log?")){lg.gym=null;addScore(-3);save();toast('Gym log undone.','bad');tick(true)}
+  return;
+ }
  lg.gym=Date.now();addScore(3);save();
  chime();buzz([50,30,50]);
  toast('Gym logged.','good');
