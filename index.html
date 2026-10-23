@@ -240,6 +240,13 @@ canvas#wc{width:100%;height:170px;display:block}
 #toasts{position:fixed;top:calc(12px + env(safe-area-inset-top));left:0;right:0;z-index:80;display:flex;flex-direction:column;align-items:center;gap:6px;pointer-events:none;padding:0 14px}
 .toast{background:rgba(22,26,43,.94);border:1px solid var(--hair2);padding:11px 16px;border-radius:14px;font-size:14px;transition:.35s var(--ease);text-align:center;box-shadow:0 12px 30px -8px rgba(0,0,0,.55);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
 .toast.bad{border-color:rgba(255,122,133,.45)}.toast.good{border-color:rgba(116,224,181,.45)}.toast.out{opacity:0;transform:translateY(-8px)}
+.bars.ac i{background:rgba(255,159,122,.7)}
+.fab{position:fixed;right:max(16px,calc(50% - 232px));bottom:calc(env(safe-area-inset-bottom) + 88px);z-index:30;display:flex;align-items:center;gap:8px;padding:12px 18px 12px 14px;border:0;border-radius:99px;
+ background:linear-gradient(180deg,#ffb89c,#ff9168);color:#2b1409;font:600 14.5px var(--sans);cursor:pointer;
+ box-shadow:0 14px 32px -8px rgba(255,145,104,.7),inset 0 0 0 1px rgba(255,255,255,.28);transition:transform .15s var(--ease)}
+.fab:active{transform:scale(.95)}
+.opt{margin-top:0;flex-direction:column;align-items:flex-start;gap:3px;text-align:left;padding:15px 17px}
+.opt small{font-weight:400;opacity:.78;font-size:13px;line-height:1.35}
 @media (min-width:900px){
  .view{padding-left:calc(50% - 250px);padding-right:calc(50% - 250px)}
 }
@@ -314,6 +321,7 @@ canvas#wc{width:100%;height:170px;display:block}
         <div class="blab">Writing</div><div class="bars wr" id="wrBars"></div>
       </article>
       <article class="card"><div class="ch"><h2>Gym</h2><span class="aside">last 7 days</span></div><div class="bars g" id="gBars"></div></article>
+      <article class="card"><div class="ch"><h2>Actions</h2><span class="aside">sprints finished, 7 days</span></div><div class="bars ac" id="aBars"></div></article>
       <article class="card"><div class="ch"><h2>What gets in your way</h2><span class="aside">30 days</span></div><div id="blk"></div></article>
     </section>
 
@@ -368,6 +376,7 @@ canvas#wc{width:100%;height:170px;display:block}
     <button data-v="body" data-i="trend" data-l="Stats"></button>
     <button data-v="cfg" data-i="sliders" data-l="Settings"></button>
   </nav>
+  <button class="fab" id="actFab" aria-label="Act: get out of your head"></button>
 </div>
 <div id="lock">
   <div id="lock-badge"></div><div id="lock-title"></div><div id="lock-desc"></div><div id="lock-time"></div>
@@ -411,7 +420,9 @@ const ICON={
  list:'<path d="M9 6h11M9 12h11M9 18h11"/><circle cx="4.5" cy="6" r="1"/><circle cx="4.5" cy="12" r="1"/><circle cx="4.5" cy="18" r="1"/>',
  book:'<path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z"/><path d="M4 21V5"/><path d="M9 8h6"/>',
  sliders:'<path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/>',
- x:'<path d="M18 6 6 18M6 6l12 12"/>'
+ x:'<path d="M18 6 6 18M6 6l12 12"/>',
+ bolt:'<path d="M13 2 4 14h7l-1 8 9-12h-7z"/>',
+ wind:'<path d="M17.7 7.7a2.5 2.5 0 1 1 1.8 4.3H2"/><path d="M9.6 4.6A2 2 0 1 1 11 8H2"/><path d="M12.6 19.4A2 2 0 1 0 14 16H2"/>'
 };
 const ic=(n,s=16)=>`<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${ICON[n]||''}</svg>`;
 
@@ -435,6 +446,8 @@ const DEFAULT_SCHEDULE=[
  {id:'fls',t:'10:30',d:60,type:'french',skill:'listen',w:30,title:'French listening',desc:"Today's listening task is waiting. No subtitles on the first pass.",days:WE},
  {id:'m2',t:'13:00',d:30,type:'meal',title:'Lunch',desc:P.lunch,days:WE},
  {id:'m3',t:'16:00',d:20,type:'meal',title:'Chicken',desc:P.chicken,days:ALL},
+ {id:'dump',t:'16:30',d:15,type:'dump',title:'Worry window',desc:'Fifteen minutes to empty your head onto a page, so it stays quiet while you train French.',days:WD},
+ {id:'dump',t:'09:05',d:15,type:'dump',title:'Worry window',desc:'Fifteen minutes to empty your head onto a page, so it stays quiet while you train French.',days:WE},
  {id:'fsp',t:'17:00',d:60,type:'french',skill:'speak',w:30,title:'French speaking',desc:"Today's drill is waiting. Out loud, and record yourself.",days:WD},
  {id:'fls',t:'18:00',d:60,type:'french',skill:'listen',w:30,title:'French listening',desc:"Today's listening task is waiting. No subtitles on the first pass.",days:WD},
  // gym nights (Mon Tue Thu Fri): small snack, train 8–9, shake straight after, dinner once appetite is back
@@ -456,6 +469,7 @@ const TYPES={
  french:{c:'#7b93ff',icn:'mic',xp:55,pen:55,label:'French'},
  mind:{c:'#c9a4ff',icn:'spark',xp:35,pen:35,label:'Ritual'},
  plan:{c:'#e6d3a3',icn:'pen',xp:25,pen:20,label:'Plan'},
+ dump:{c:'#ff9f7a',icn:'wind',xp:30,pen:20,label:'Offload'},
  body:{c:'#9fb3d9',icn:'sun',xp:15,pen:15,label:'Body'},
  sleep:{c:'#9aa3c7',icn:'moon',xp:20,pen:20,label:'Sleep'}
 };
@@ -638,7 +652,7 @@ function toast(m,k=''){const t=h('div','toast '+k,m);$('#toasts').appendChild(t)
 /* ---------- runtime ---------- */
 let curDate='',ITEMS=[],STAT={},sig='',lastTick=Date.now();
 let lockId=null,lockMode=null,lockLate=false,coreSig='',wake=null,gchainSig='';
-let ritualT=[],swInt=null;
+let ritualT=[],swInt=null,SPR=null;
 
 function sched(date){
  const src=S.cfg.schedule||DEFAULT_SCHEDULE,dow=date.getDay();
@@ -700,6 +714,10 @@ function tick(force){
    else if(S.focus.acc>=focusNeed(it)){complete(it.id);return}
   }
  }
+ if(SPR&&SPR.run&&document.visibilityState==='visible'){
+  SPR.acc+=dt;if(SPR.fr)lg.fr[SPR.fr]=(lg.fr[SPR.fr]||0)+dt;
+  if(SPR.acc>=SPR.dur*60){sprintDone();return}
+ }
  if(S.sw&&S.sw.run){lg.fr.write=(lg.fr.write||0)+dt;save()}
 
  let changed=false;
@@ -724,9 +742,9 @@ function tick(force){
  const fi=S.focus&&ITEMS.find(i=>i.id===S.focus.id);
  if(fi){if(lockId!==fi.id||lockMode!=='focus')openFocus(fi)}
  else if(S.cfg.strict&&lockId==null){const d=due.find(i=>i.type==='french'&&!(lg.snooze[i.id]>nowMs));if(d)openLock(d)}
- else if(lockId&&!lockLate&&lockMode!=='ritual'&&stat[lockId]!=='due')closeLock();
+ else if(lockId&&!lockLate&&['prompt','skip','form'].includes(lockMode)&&stat[lockId]!=='due')closeLock();
 
- updateHeader();renderCore(nm);renderFuel();updateFrenchCard();updateGymCard();updateWeightCard();updateLockTime(nm);updateFocusUI();updateSwUI();
+ updateHeader();renderCore(nm);renderFuel();updateFrenchCard();updateGymCard();updateWeightCard();updateLockTime(nm);updateFocusUI();updateSprintUI();updateSwUI();
  document.title=(S.focus&&S.focus.run)?`${fsec(((ITEMS.find(i=>i.id===S.focus.id)||{d:0}).d)*60-S.focus.acc)} · FOCUS`:'Discipline Engine';
 }
 function alert_(it){
@@ -795,7 +813,7 @@ function coach(nm){
  if(mandOk&&fr>=ftot)return '<b>French is done for today.</b> Speaking, listening and writing all logged. That is a full day of real progress.';
  if(mandOk)return `<b>Mandatory French is done.</b> ${fdur((ftot-fr)/60)} of writing left if you want the full three hours.`;
  if(first&&nm<first.s)return `Week ${wk} of 10, <b>${th.n.toLowerCase()}</b>. French starts at ${fmt(first.s)}, in ${fdur(first.s-nm)}. Read today's drill now so starting costs nothing.`;
- if(fr<60)return '<b>Don\'t wait to feel ready.</b> Press start. Speaking first; five minutes counts.';
+ if(fr<60)return '<b>Don\'t wait to feel ready.</b> Press start. Speaking first; five minutes counts. Stuck in your head? Tap Act.';
  return `<b>${fhm(fr)} of ${fhm(ftot)}.</b> Speaking and listening are both mandatory. The day isn't closed without them.`;
 }
 function renderCore(nm){
@@ -876,7 +894,9 @@ function renderStats(){
   <div class="stat" style="--sc:var(--french)"><b style="color:var(--french)">${frStreak()} d</b><span>French streak</span></div>
   <div class="stat" style="--sc:var(--gym)"><b style="color:var(--gym)">${gymStreak()} d</b><span>Gym streak</span></div>
   <div class="stat" style="--sc:var(--weight)"><b style="color:var(--weight)">${wc.have&&wc.etaDate?new Date(wc.etaDate+'T00:00:00').toLocaleDateString(undefined,{month:'short',day:'numeric'}):'—'}</b><span>Weight goal ETA</span></div>
-  <div class="stat" style="--sc:#ece8df"><b>${Math.round(S.score)}</b><span>Consistency</span></div>`;
+  <div class="stat" style="--sc:#ece8df"><b>${Math.round(S.score)}</b><span>Consistency</span></div>
+  <div class="stat" style="--sc:#ff9f7a"><b style="color:#ff9f7a">${L(curDate).actions||0}</b><span>Actions today</span></div>
+  <div class="stat" style="--sc:#ff9f7a"><b style="color:#ff9f7a">${actStreak()} d</b><span>Action streak</span></div>`;
 }
 function tapItem(id){
  const it=ITEMS.find(i=>i.id===id);if(!it)return;const s=STAT[it.id];
@@ -951,6 +971,9 @@ function openLock(it,late=false){
  }else if(it.type==='plan'){
   const b=h('button','go','Plan tomorrow (about 3 min)');b.style.background=T.c;
   b.onclick=()=>{unlockAudio();planForm(it)};body.appendChild(b);
+ }else if(it.type==='dump'){
+  const b=h('button','go','Start the worry window (about 5 min)');b.style.background=T.c;
+  b.onclick=()=>{unlockAudio();actFlow(it)};body.appendChild(b);
  }else body.appendChild(holdBtn(it.type==='work'?'Hold to clock in':'Hold to confirm',1500,()=>complete(it.id)));
  renderLockFoot(it);
 }
@@ -985,7 +1008,7 @@ function renderLockFoot(it){
  f.appendChild(left);
  if(!it.opt)f.appendChild(holdBtn('Hold 3s to skip',3000,()=>skipFlow(it),'sm2'));
 }
-function closeLock(){clearRitual();lockId=null;lockMode=null;lockLate=false;$('#lock').classList.remove('on');$('#lock-body').innerHTML='';$('#lock-foot').innerHTML='';coreSig=''}
+function closeLock(){clearRitual();SPR=null;lockId=null;lockMode=null;lockLate=false;$('#lock').classList.remove('on');$('#lock-body').innerHTML='';$('#lock-foot').innerHTML='';coreSig=''}
 function updateLockTime(nm){
  if(!lockId)return;const it=ITEMS.find(i=>i.id===lockId);if(!it)return;
  const el=$('#lock-time');
@@ -1000,6 +1023,7 @@ const LITE={
  french:{label:'Do a 15-minute version (half credit)',run:it=>startFocus(it,{dur:15})},
  meal:{label:'Eat the mini version: banana and milk',run:it=>liteConfirm(it,'Mini version: eat something small right now. Banana and a glass of milk counts.')},
  mind:{label:'Do the 2-minute version',run:it=>liteConfirm(it,'Three slow breaths. Then say one identity statement out loud, slowly.')},
+ dump:{label:'Just write one line',run:it=>liteConfirm(it,'Write the one thing worrying you most, on paper or in your notes. Then close it and leave it there.')},
  plan:{label:"Just write tomorrow's first task",run:it=>liteConfirm(it,"Write one line somewhere: what you'll do first at 5:00 PM tomorrow.")}
 };
 function skipFlow(it){
@@ -1152,6 +1176,159 @@ function ritual(it){
  breath();
 }
 
+/* ---------- Act: stop thinking, start doing ---------- */
+const CORAL='#ff9f7a';
+const actStreak=streakFn(k=>(peek(k).actions||0)>0);
+function nextSkill(){const lg=L(curDate);for(const sk of ['speak','listen']){if((lg.fr[sk]||0)<frTarget(sk))return sk}return 'write'}
+function quietDone(it,note){
+ const lg=L(curDate);if(lg.done[it.id])return;
+ const was=lg.missed.includes(it.id);
+ lg.missed=lg.missed.filter(x=>x!==it.id);lg.done[it.id]=Date.now();if(note)lg.notes[it.id]=note;
+ addScore(Math.max(1,Math.round(TYPES[it.type].xp/(was?24:12))));save();
+ toast(`${it.title} done`,'good');
+}
+function sprint(o){
+ clearRitual();
+ const T=o.kind==='french'?TYPES.french:o.kind==='move'?{c:'#74e0b5',icn:'dumb',label:'Move'}:TYPES.dump;
+ SPR={kind:o.kind,label:o.label,dur:o.mins,acc:0,run:true,fr:o.fr||null};
+ lockId='__act';lockMode='sprint';lockLate=false;
+ const el=$('#lock');el.classList.add('on');el.style.setProperty('--c',T.c);
+ $('#lock-badge').innerHTML=`${ic(T.icn,14)} Action sprint, ${o.mins} min`;$('#lock-title').textContent=o.label;
+ $('#lock-desc').textContent=o.hint||'One thing. No thinking. Keep going until the timer ends.';$('#lock-time').textContent='';
+ const R=94,C=2*Math.PI*R;
+ $('#lock-body').innerHTML=`<svg class="ring2" width="214" height="214" viewBox="0 0 220 220"><circle cx="110" cy="110" r="${R}" fill="none" stroke="rgba(255,255,255,.08)" stroke-width="8"/><circle id="spring" cx="110" cy="110" r="${R}" fill="none" stroke="${T.c}" stroke-width="8" stroke-linecap="round" stroke-dasharray="${C}" stroke-dashoffset="${C}" transform="rotate(-90 110 110)"/></svg><div class="ftime" id="sptime">--:--</div>${o.html?`<div class="note">${o.html}</div>`:''}<button class="go" id="sppause" style="background:${T.c}"></button>`;
+ $('#sppause').onclick=()=>{unlockAudio();SPR.run=!SPR.run;if(SPR.run)reqWake();else releaseWake();updateSprintUI()};
+ const f=$('#lock-foot');f.innerHTML='';
+ f.appendChild(holdBtn('Hold 3s to stop',3000,()=>{SPR=null;releaseWake();closeLock();toast('Sprint stopped.','bad');tick(true)},'sm2'));
+ reqWake();updateSprintUI();
+}
+function updateSprintUI(){
+ if(lockMode!=='sprint'||!SPR)return;const e=$('#sptime');if(!e)return;
+ const need=SPR.dur*60,C=2*Math.PI*94;
+ e.textContent=fsec(need-SPR.acc);$('#spring').style.strokeDashoffset=C*(1-Math.min(1,SPR.acc/need));
+ $('#sppause').textContent=SPR.run?'Pause':'Resume';
+}
+function sprintDone(){
+ const s=SPR;SPR=null;const lg=L(curDate);
+ lg.actions=(lg.actions||0)+1;S.acts=(S.acts||0)+1;
+ addScore(s.kind==='step'?1:2);releaseWake();chime();buzz([60,40,60]);
+ let line=`${s.dur} minutes of action.`;
+ if(s.fr){
+  const blk=ITEMS.find(i=>i.type==='french'&&i.skill===s.fr&&!lg.done[i.id]);
+  if(blk&&(lg.fr[s.fr]||0)>=frTarget(s.fr))quietDone(blk,'sprint');
+  line=`${Math.floor((lg.fr[s.fr]||0)/60)} of ${Math.floor(frTarget(s.fr)/60)} minutes of ${SKILL_LABEL_FR[s.fr]||'writing'} today.`;
+ }
+ save();momentum(s,line);
+}
+function momentum(s,line){
+ lockId='__act';lockMode='act';lockLate=false;
+ const el=$('#lock');el.classList.add('on');el.style.setProperty('--c',CORAL);
+ $('#lock-badge').innerHTML=`${ic('bolt',14)} Momentum`;$('#lock-title').textContent='You moved.';
+ $('#lock-desc').textContent=`${line} That is what acting feels like. Pick the next one while you are in motion.`;$('#lock-time').textContent='';
+ $('#lock-foot').innerHTML='';const body=$('#lock-body');body.innerHTML='';
+ actMenu(body,'',s);
+}
+function actMenu(body,step,prev){
+ const lg=L(curDate),sk=nextSkill(),opts=h('div');opts.style.cssText='display:grid;gap:10px;margin-top:6px';body.appendChild(opts);
+ const add=(label,sub,fn,bg)=>{const b=h('button','go opt');b.style.background=bg;b.innerHTML=`<span>${esc(label)}</span><small>${esc(sub)}</small>`;b.onclick=()=>{unlockAudio();fn()};opts.appendChild(b)};
+ if(step)add(`Do it now: ${step.length>34?step.slice(0,34)+'…':step}`,'Two minutes. Just start the step.',()=>sprint({kind:'step',label:step,mins:2}),CORAL);
+ const d=sk==='write'?null:drillFor(curDate,sk);
+ add(`${SKILL_LABEL[sk]} sprint, 25 minutes`,`${Math.floor((lg.fr[sk]||0)/60)} of ${Math.floor(frTarget(sk)/60)} min today. ${d?d.kind+': '+d.title+'.':'Write about your day in French.'}`,
+  ()=>sprint({kind:'french',fr:sk,label:`${SKILL_LABEL[sk]} sprint`,mins:25,html:d?`<b>${esc(d.kind)}: ${esc(d.title)}</b>${d.html}`:'Write about your day in French. Do not stop to fix mistakes.'}),'#7b93ff');
+ add('Move sprint, 10 minutes','Push-ups, squats, a fast walk. Do not plan it, just move.',()=>sprint({kind:'move',label:'Move sprint',mins:10,hint:'Move your body. Do not plan the workout, just start moving.'}),'#74e0b5');
+ if(nextMeal())add('Eat now',nextMeal().title,eatNow,'#f3b26b');
+ if(prev&&prev.kind==='move'&&!lg.gym){const g=h('button','ghost','This was my gym session. Log it.');g.onclick=()=>{logGym();g.remove()};body.appendChild(g)}
+ const done=h('button','ghost',"I'm done for now");done.onclick=closeLock;body.appendChild(done);
+}
+function nextMeal(){
+ const lg=L(curDate),nm=new Date().getHours()*60+new Date().getMinutes();
+ return ITEMS.filter(i=>i.type==='meal'&&!lg.done[i.id]&&!lg.ign.includes(i.id)&&i.s<=nm+90).sort((a,b)=>a.s-b.s)[0]||null;
+}
+function eatNow(){
+ const m=nextMeal();if(!m){toast('Your meals are on track.','good');closeLock();return}
+ lockId='__act';lockMode='act';
+ const T=TYPES.meal,el=$('#lock');el.style.setProperty('--c',T.c);
+ $('#lock-badge').innerHTML=`${ic('cup',14)} Fuel`;$('#lock-title').textContent=m.title;$('#lock-desc').textContent=m.desc||'';$('#lock-time').textContent='';
+ const body=$('#lock-body');body.innerHTML='';$('#lock-foot').innerHTML='';
+ const inp=h('input','in');inp.placeholder='What did you eat? (optional)';body.appendChild(inp);
+ body.appendChild(holdBtn('Hold to confirm: I ate',1800,()=>complete(m.id,inp.value.trim())));
+ const back=h('button','ghost','Back');back.onclick=closeLock;body.appendChild(back);
+}
+function actFlow(it){
+ clearRitual();SPR=null;
+ lockId='__act';lockMode='act';lockLate=false;
+ const el=$('#lock');el.classList.add('on');el.style.setProperty('--c',CORAL);
+ $('#lock-badge').innerHTML=`${ic('bolt',14)} Act`;
+ $('#lock-title').textContent=it?it.title:'Out of your head. Into action.';
+ $('#lock-desc').textContent=it?it.desc:'Thinking feels like progress. It is not. Dump it, decide, and move.';
+ $('#lock-time').textContent='';
+ const body=$('#lock-body'),foot=$('#lock-foot');foot.innerHTML='';
+ const x=h('button','btn','Close');x.onclick=closeLock;foot.appendChild(x);
+ const goBtn=(label,fn)=>{const b=h('button','go',label);b.style.background=CORAL;b.onclick=()=>{unlockAudio();fn()};return b};
+ function s0(){
+  clearRitual();body.innerHTML='';
+  const nt=h('div','note');nt.innerHTML='<b>Why this works</b>Overthinking is your brain looping on something it cannot finish inside your head. A written dump, one decision and one tiny action ends the loop. Nothing you type here is saved.';
+  body.appendChild(nt);
+  body.appendChild(goBtn('Start: 60-second brain dump',s1));
+  const c=h('button','ghost',"I'm spiralling. Calm my body first (60 s)");c.onclick=()=>{unlockAudio();calm()};body.appendChild(c);
+  const k=h('button','ghost','I already know what to do. Skip to action.');k.onclick=()=>{unlockAudio();launch('')};body.appendChild(k);
+ }
+ function calm(){
+  clearRitual();
+  body.innerHTML=`<div style="display:flex;flex-direction:column;align-items:center;gap:18px;margin:18px 0"><div id="bo" style="width:130px;height:130px;border-radius:50%;background:radial-gradient(circle,var(--c),transparent 72%);transform:scale(.5)"></div><div id="bt" class="bigaff" style="font-size:20px;margin:0">Big breath in through the nose</div></div><div class="sub" id="bs"></div>`;
+  let e=0;const bo=$('#bo'),bt=$('#bt');
+  const upd=()=>{const p=e%10;
+   if(p===0){bt.textContent='Big breath in through the nose';bo.style.transition='transform 2s ease-in-out';bo.style.transform='scale(.95)'}
+   else if(p===2){bt.textContent='One more small sip in';bo.style.transition='transform 1s ease-in-out';bo.style.transform='scale(1.08)'}
+   else if(p===3){bt.textContent='Now a long, slow breath out';bo.style.transition='transform 6s ease-in-out';bo.style.transform='scale(.5)'}
+   $('#bs').textContent=`Double inhale, long exhale · ${60-e}s`};
+  upd();const iv=setInterval(()=>{e++;if(e>=60){clearRitual();chime();s1();return}upd()},1000);ritualT.push(iv);
+ }
+ function s1(){
+  clearRitual();
+  body.innerHTML=`<textarea id="dmp" style="font:16px/1.5 var(--sans);min-height:180px" placeholder="Everything swirling in your head. Worries, tasks, what-ifs. No filtering, no fixing. Just get it out."></textarea><div class="sub" id="ds">Brain dump · 60 s · nothing is saved</div><div id="db"></div>`;
+  const ta=$('#dmp');ta.focus();let e=0;
+  const btn=goBtn('Done: it is out of my head',s2);btn.style.display='none';$('#db').appendChild(btn);
+  ta.addEventListener('input',()=>{btn.style.display=ta.value.trim().length>=10?'':'none'});
+  const iv=setInterval(()=>{e++;const d=$('#ds');if(d)d.textContent=e<60?`Brain dump · ${60-e} s · nothing is saved`:'Finish when you are ready'},1000);ritualT.push(iv);
+ }
+ function s2(){
+  clearRitual();body.innerHTML='';
+  body.appendChild(h('div','bigaff','Look at the biggest thing on that page. Can you do something about it today?'));
+  body.appendChild(goBtn('Yes, I can act on it',s3));
+  const n=h('button','go','No, it is out of my control');n.style.cssText='background:transparent;color:var(--tx);border:1.5px solid var(--hair2);box-shadow:none';n.onclick=release;body.appendChild(n);
+ }
+ function release(){
+  body.innerHTML='';
+  const nt=h('div','note');nt.innerHTML='<b>Letting go is an action</b>If you cannot change it today, thinking about it again costs energy and gives nothing back. Say it: <q>I cannot control this. I choose to put my energy elsewhere.</q>';
+  body.appendChild(nt);
+  body.appendChild(holdBtn('Hold to release it',2500,()=>{chime();toast('Released. Now point that energy somewhere useful.','good');launch('')}));
+ }
+ function s3(){
+  body.innerHTML='';
+  body.appendChild(h('div','bigaff','What is the smallest physical first step? Under two minutes.'));
+  const chips=h('div','chips');body.appendChild(chips);
+  const inp=h('input','in');inp.placeholder='e.g. open the speaking drill';inp.maxLength=100;
+  const go=goBtn('Commit and launch',()=>launch(inp.value.trim()));go.disabled=true;
+  const upd=()=>{go.disabled=inp.value.trim().length<3};
+  ['Open the French drill','Put on gym clothes','Make the next meal','Write one sentence in French','Send the message'].forEach(t=>{const c=h('button','chip',t);c.onclick=()=>{inp.value=t;upd()};chips.appendChild(c)});
+  inp.addEventListener('input',upd);body.append(inp,go);
+ }
+ function launch(step){
+  clearRitual();
+  body.innerHTML='<div class="ftime" id="cd" style="font-size:120px;font-weight:300;margin:30px 0">5</div><div class="sub">Do not think. Move.</div>';
+  let n=5;
+  const iv=setInterval(()=>{n--;
+   if(n<=0){clearRitual();buzz(90);chime();if(it)quietDone(it,'worry window');
+    body.innerHTML='';body.appendChild(h('div','bigaff','Go.'));actMenu(body,step,null);return}
+   const c=$('#cd');if(c)c.textContent=n;beep(520+(5-n)*110,.12)},1000);
+  ritualT.push(iv);
+ }
+ s0();
+}
+$('#actFab').innerHTML=ic('bolt',17)+'<span>Act</span>';
+$('#actFab').onclick=()=>{unlockAudio();actFlow(null)};
+
 /* ---------- stats tab ---------- */
 function renderBody(){
  drawWeights();
@@ -1163,6 +1340,7 @@ function renderBody(){
   ls.push(`<div><i style="height:${Math.max(3,Math.min(1,(f.listen||0)/3600)*70)}px"></i>${Math.floor((f.listen||0)/60)}<br>${dn}</div>`);
   wr.push(`<div><i style="height:${Math.max(3,Math.min(1,(f.write||0)/3600)*70)}px"></i>${Math.floor((f.write||0)/60)}<br>${dn}</div>`);
  }
+ {const ab=[];for(let i=6;i>=0;i--){const x=new Date();x.setDate(x.getDate()-i);const n=peek(dkey(x)).actions||0;ab.push(`<div><i style="height:${Math.max(3,Math.min(1,n/6)*70)}px"></i>${n}<br>${['S','M','T','W','T','F','S'][x.getDay()]}</div>`)}$('#aBars').innerHTML=ab.join('')}
  $('#gBars').innerHTML=gb.join('');$('#spBars').innerHTML=sp.join('');$('#lsBars').innerHTML=ls.join('');$('#wrBars').innerHTML=wr.join('');
  const cnt={};const cut=new Date();cut.setDate(cut.getDate()-30);const ck=dkey(cut);
  Object.entries(S.log).forEach(([k,l])=>{if(k>=ck)Object.values(l.reasons||{}).forEach(r=>cnt[r]=(cnt[r]||0)+1)});
@@ -1257,7 +1435,7 @@ if('serviceWorker'in navigator&&location.protocol.startsWith('http'))navigator.s
 if(S.focus){S.focus.run=false}
 if(S.sw){S.sw.run=false}
 initCfg();renderWriteStopwatch();tick(true);setInterval(tick,1000);
-window.__DE={get S(){return S},tick,openLock,drillFor,renderProgram,get ITEMS(){return ITEMS},weightCalc,logGym};
+window.__DE={get S(){return S},tick,openLock,drillFor,renderProgram,get ITEMS(){return ITEMS},weightCalc,logGym,get SPR(){return SPR},actFlow};
 })();
 </script>
 </body>

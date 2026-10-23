@@ -20,6 +20,16 @@ A greeting and coach line, three rings (French today, weight toward goal, gym se
 - **Loss aversion:** consistency-score penalties for missed blocks, and for closing out a day without gym or without both mandatory French sessions.
 - **Weight ETA, not vibes:** a real projection from your logged trend against your deadline — tells you if the pace you're actually keeping gets you there.
 
+## Act: stop thinking, start doing
+
+For the loop where you think a lot and do little. The coral **Act** button floats on every tab.
+
+1. **Brain dump (60 s).** Get it out of your head. Nothing typed is saved.
+2. **Can you act on it today?** No means a held "release" and you move on. Yes means pick the smallest physical step.
+3. **5-4-3-2-1 launch**, then choose: do the step (2 min), a 25-minute French sprint, a 10-minute move sprint (can count as your gym session), or eat now.
+
+Spiralling? "Calm my body first" runs a 60-second double-inhale breathing reset. A daily **Worry window** (16:30 weekdays, 09:05 weekends) schedules the dump so worry has a place that is not your study time. Stats show actions today and an action streak.
+
 ## Put it online (GitHub Pages)
 1. New GitHub repo, upload: `index.html`, `manifest.webmanifest`, `sw.js`, `icon.svg`, `README.md`.
 2. Settings → Pages → Deploy from branch → `main` / root.
