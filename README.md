@@ -40,12 +40,12 @@ Spiralling? "Calm my body first" runs a 60-second double-inhale breathing reset.
 Set your weight target and deadline (defaults to +8kg in 60 days from whenever you first open the app), per-skill French minute targets, strict mode, and sound — all in the Config tab. Export/Import backs up everything as JSON.
 
 ## Real push notifications (even when the app is closed)
-A static site can't wake itself up on its own — that's an OS restriction, not a limitation of this app. So the push pipeline here uses a real, separate sender: a GitHub Action in this repo runs every 10 minutes, checks the time in America/Toronto against `data/schedule.json`, and sends a Web Push notification through Apple's push service for anything due. It works even if the app hasn't been opened all day, on iOS 16.4+, once installed via Add to Home Screen.
+A static site can't wake itself up on its own — that's an OS restriction, not a limitation of this app. So the push pipeline here uses a real, separate sender: a GitHub Action in this repo runs every 5 minutes (with a 45-minute catch-up window, since GitHub cron can run late), checks the time in America/Toronto against `data/schedule.json`, and sends a Web Push notification through Apple's push service for anything due. It works even if the app hasn't been opened all day, on iOS 16.4+, once installed via Add to Home Screen.
 
 One-time setup:
 1. Repo → Settings → Secrets and variables → Actions → add `VAPID_PUBLIC_KEY` and `VAPID_PRIVATE_KEY` (generated once, provided separately — don't commit the private key to the repo).
 2. On the phone: Add to Home Screen → open from the Home Screen icon → Settings tab → "Set up push notifications" → allow the permission prompt.
-3. Copy the subscription JSON it shows you and get it committed to `data/subscription.json` (Claude can do this, or commit it by hand).
+3. Tap "Save to GitHub (1 tap)" in the same screen and press Commit changes. (Need two devices? Make `data/subscription.json` a JSON array of both subscriptions.)
 4. From the GitHub repo's Actions tab, run the "Push reminders" workflow once manually (`workflow_dispatch`) to confirm a test notification arrives, instead of waiting for the next 10-minute tick.
 
 `data/schedule.json` is a flat duplicate of `DEFAULT_SCHEDULE` in `index.html`, since the Action can't execute the app's JS — if you change meal times or days in the app, update that file too or the reminders will drift out of sync. `data/sent.json` tracks what's already been sent today so nothing double-fires; the Action commits it back after each run.

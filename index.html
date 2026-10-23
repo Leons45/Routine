@@ -335,12 +335,12 @@ canvas#wc{width:100%;height:170px;display:block}
       </div>
       <h3>Push notifications</h3>
       <div class="card" style="padding:4px 16px 16px">
-        <p class="md" style="margin:10px 2px 4px">Real notifications that arrive even if the app has been closed all day — sent by a GitHub Action on your schedule. One-time setup: generate a subscription below, then send it to Claude once to finish wiring it up.</p>
+        <p class="md" style="margin:10px 2px 4px">Real notifications that arrive even if the app has been closed all day, sent by a GitHub Action on your schedule. One-time setup: tap the button, allow notifications, then tap "Save to GitHub" and commit the file.</p>
         <div class="rowf" style="margin-top:10px"><button class="btn" id="cPush" style="flex:1">Set up push notifications</button></div>
         <div id="pushOut" style="display:none;margin-top:12px">
           <p class="md" id="pushMsg" style="margin:0 0 8px"></p>
           <textarea id="pushJson" readonly style="min-height:110px"></textarea>
-          <div class="rowf" style="margin-top:8px"><button class="btn" id="pushCopy">Copy subscription</button></div>
+          <div class="rowf" style="margin-top:8px;gap:8px;flex-wrap:wrap"><button class="btn" id="pushGh" style="flex:1">Save to GitHub (1 tap)</button><button class="btn" id="pushCopy">Copy</button></div>
         </div>
       </div>
       <h3>Weight goal</h3>
@@ -1408,12 +1408,13 @@ $('#cPush').onclick=async()=>{
   let sub=await reg.pushManager.getSubscription();
   if(!sub)sub=await reg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:urlB64ToUint8(VAPID_PUBLIC_KEY)});
   const json=JSON.stringify(sub.toJSON(),null,1);
-  $('#pushMsg').textContent='Subscribed. Copy this and send it to Claude once — it gets committed to the repo and the GitHub Action takes it from there.';
+  $('#pushMsg').textContent='Subscribed. Tap Save to GitHub, then Commit changes on the page that opens (sign in if asked). The Action takes it from there and sends a test.';
   $('#pushJson').value=json;$('#pushOut').style.display='';
-  toast('Subscribed — now send the JSON to Claude','good');
+  toast('Subscribed. Now tap Save to GitHub','good');
  }catch(e){toast(e.message,'bad')}
  btn.disabled=false;
 };
+$('#pushGh').onclick=()=>{const v=$('#pushJson').value;if(!v)return;window.open('https://github.com/Leons45/Routine/new/main/data?filename=subscription.json&value='+encodeURIComponent(v),'_blank')};
 $('#pushCopy').onclick=async()=>{try{await navigator.clipboard.writeText($('#pushJson').value);toast('Copied','good')}catch(e){$('#pushJson').select();toast('Select All then Copy','bad')}};
 $('#cAffSave').onclick=()=>{S.cfg.aff=$('#cAff').value.split('\n').map(s=>s.trim()).filter(Boolean);save();toast('Statements saved','good')};
 $('#cSchedSave').onclick=()=>{try{const a=JSON.parse($('#cSched').value);

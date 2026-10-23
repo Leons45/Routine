@@ -15,8 +15,13 @@ const ROOT = path.join(__dirname, '..');
 const SCHEDULE_PATH = path.join(ROOT, 'data', 'schedule.json');
 const SUB_PATH = path.join(ROOT, 'data', 'subscription.json');
 const SENT_PATH = path.join(ROOT, 'data', 'sent.json');
-// Matches the cron's actual cadence — widen this if the cron interval changes.
-const WINDOW_MINUTES = 12;
+// GitHub's scheduler is best-effort: runs often start 10-30+ min late and some
+// are skipped entirely. A wide catch-up window means a late run still delivers
+// the reminder instead of dropping it. Anything past LATE_AFTER is flagged.
+const WINDOW_MINUTES = 45;
+const LATE_AFTER = 10;
+// Nudges are only useful on time; don't send them stale.
+const NUDGE_WINDOW = 15;
 
 function readJson(p, fallback) {
   try { return JSON.parse(fs.readFileSync(p, 'utf8')); } catch (e) { return fallback; }
@@ -47,8 +52,10 @@ async function main() {
     console.log('VAPID keys missing from the environment — add the repo secrets. Skipping.');
     return;
   }
-  const sub = readJson(SUB_PATH, null);
-  if (!sub) {
+  const raw = readJson(SUB_PATH, null);
+  // One device (object) or several (array: phone + laptop).
+  const subs = (Array.isArray(raw) ? raw : [raw]).filter((x) => x && x.endpoint);
+  if (!subs.length) {
     console.log('No data/subscription.json yet — nothing to send to. Skipping.');
     return;
   }
@@ -63,7 +70,8 @@ async function main() {
     if (!it.days.includes(dow)) return false;
     if (sentToday.includes(it.id)) return false;
     const t = toMin(it.t);
-    return mins >= t && mins < t + WINDOW_MINUTES;
+    const win = it.id.startsWith('nx-') ? NUDGE_WINDOW : WINDOW_MINUTES;
+    return mins >= t && mins < t + win;
   });
 
   if (!due.length) {
@@ -71,21 +79,27 @@ async function main() {
     return;
   }
 
+  let alive = subs.slice();
   for (const it of due) {
-    const payload = JSON.stringify({ id: it.id, title: it.title, body: it.body });
-    try {
-      await webpush.sendNotification(sub, payload);
-      console.log(`Sent: ${it.title}`);
-      sentToday.push(it.id);
-    } catch (err) {
-      console.error(`Failed to send ${it.title}:`, err.statusCode || err.message);
-      // 404/410 means the subscription is gone (uninstalled, permission revoked) — don't retry it forever.
-      if (err.statusCode === 404 || err.statusCode === 410) {
-        fs.writeFileSync(SUB_PATH, '{}\n');
-        console.log('Subscription expired — cleared data/subscription.json. Re-subscribe in Settings.');
-        break;
+    const late = mins - toMin(it.t);
+    const body = late > LATE_AFTER ? `${it.body} (${late} min late: do not wait for another reminder.)` : it.body;
+    const payload = JSON.stringify({ id: it.id, title: it.title, body });
+    let delivered = false;
+    for (const sub of alive.slice()) {
+      try {
+        await webpush.sendNotification(sub, payload, { TTL: 3600, urgency: 'high' });
+        delivered = true;
+      } catch (err) {
+        console.error(`Failed to send ${it.title}:`, err.statusCode || err.message);
+        // 404/410 means the subscription is gone (uninstalled, permission revoked).
+        if (err.statusCode === 404 || err.statusCode === 410) alive = alive.filter((x) => x !== sub);
       }
     }
+    if (delivered) { console.log(`Sent: ${it.title}`); sentToday.push(it.id); }
+  }
+  if (alive.length !== subs.length) {
+    fs.writeFileSync(SUB_PATH, alive.length ? JSON.stringify(alive.length === 1 ? alive[0] : alive, null, 1) + '\n' : '{}\n');
+    console.log('Dropped expired subscription(s). Re-subscribe in Settings if you stopped getting alerts.');
   }
 
   sentAll[dateKey] = sentToday;
